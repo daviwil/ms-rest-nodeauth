@@ -173,10 +173,10 @@ export async function withUsernamePasswordWithAuthResponse(username: string, pas
   }
 
   const creds = new UserTokenCredentials(options.clientId, options.domain, username, password, options.tokenAudience, options.environment);
-  await creds.getToken();
+  const tokenResponse = await creds.getToken();
 
   // The token cache gets propulated for all the tenants as a part of building the tenantList.
-  const tenantList = await buildTenantList(creds);
+  const tenantList = await buildTenantList(creds) ?? tokenResponse.tenantId ?? [];
   const subscriptionList: LinkedSubscription[] = await _getSubscriptions(creds, tenantList, options.tokenAudience);
 
   return { credentials: creds, subscriptions: subscriptionList };
